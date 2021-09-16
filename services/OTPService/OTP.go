@@ -95,6 +95,7 @@ func StoreData(phone string) (*big.Int, uuid.UUID) {
 	redisP.Store(phone, v.String())
 	fmt.Println("this is running", v)
 	val := GenerateUniqueId()
+
 	redisP.Store(val.String(), phone)
 	return v, val
 	//Compare(v.String(), val.String())

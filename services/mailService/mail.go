@@ -2,9 +2,12 @@ package mailservice
 
 import (
 	"auth/models"
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/smtp"
+
+	"github.com/go-gomail/gomail"
 )
 
 func SendMail(mailid string, otp string) {
@@ -22,14 +25,14 @@ func SendMail(mailid string, otp string) {
 		Body:    body,
 	}
 	username := "khuntikaran51@gmail.com" //company mail address
-	password := "maher7505"               // companies gmail password
+	password := "M@her7506"               // companies gmail password
 
-	addr := "smtp.gmail.com:587"
+	host := "smtp.gmail.com"
 	//host := "smtp.mailtrap.io"
-
+	port := "587"
 	msg := buildMail(request)
 	auth := smtp.PlainAuth("", username, password, "smtp.gmail.com")
-	err := smtp.SendMail(addr, auth, sender, to, []byte(msg))
+	err := smtp.SendMail(host+":"+port, auth, sender, to, []byte(msg))
 
 	if err != nil {
 		log.Fatal(err)
@@ -38,6 +41,25 @@ func SendMail(mailid string, otp string) {
 
 	fmt.Println("Mail sent successfully")
 
+}
+
+func Send_Mail(mail string, otp string) {
+	m := gomail.NewMessage()
+	m.SetHeader("From", "khuntikaran51@gmail.com")
+	m.SetHeader("To", mail)
+	m.SetHeader("Subject", "Your OTP for verification")
+	m.SetBody("text", "Please use"+otp+"as a your OTP")
+
+	host := "smtp.gmail.com"
+	port := 587
+	username := "khuntikaran51@gmail.com" //company mail address
+	password := "M@her7506"
+
+	d := gomail.NewDialer(host, port, username, password)
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(err)
+	}
 }
 
 func buildMail(mail models.Mail) string {
